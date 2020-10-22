@@ -75,7 +75,8 @@ class User(Resource):
         parser.add_argument('lastName',type=str, required=False, help="This field is not required")
         parser.add_argument('email',type=str, required=False, help="This field is not required")
         parser.add_argument('phone',type=str, required=False,help="This field is not required")
-        parser.add_argument('password',type=str, required=False,help="This field is not required")
+        parser.add_argument('currentPassword',type=str, required=False,help="This field is not required")
+        parser.add_argument('newPassword', type=str, required=False, help="This field is not required")
 
         data = parser.parse_args()
 
@@ -98,11 +99,16 @@ class User(Resource):
             user.email = data['email']
         if data['phone']:
             user.phone = data['phone']
-        if data['password']:
-            user.password = hash_pw(data['password'])
+
+        # I think we have to screen for the password reset specifically
+        # if we both have pieces of info - we should go forward and start checking
+        if data['currentPassword'] and data['newPassword']:
+            print('We have both pieces of information')
+            #Compare the passwords
+            if check_pw(data['currentPassword'], user.password):
+                user.password = hash_pw(data['newPassword'])
 
         user.save_to_db()
-
 
         if user_id == get_jwt_identity():
             new_tokens = {
