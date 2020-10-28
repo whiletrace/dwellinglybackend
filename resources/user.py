@@ -100,14 +100,11 @@ class User(Resource):
         if data['phone']:
             user.phone = data['phone']
 
-        # I think we have to screen for the password reset specifically
-        # if we both have pieces of info - we should go forward and start checking
         if data['currentPassword'] and data['newPassword']:
-            print('We have both pieces of information')
-            #Compare the passwords
-            if check_pw(data['currentPassword'], user.password):
-                user.password = hash_pw(data['newPassword'])
-
+          if not check_pw(data['currentPassword'], user.password):
+            return {"message": "Password does not match."}, 400
+          user.password = hash_pw(data['newPassword'])
+          
         user.save_to_db()
 
         if user_id == get_jwt_identity():
