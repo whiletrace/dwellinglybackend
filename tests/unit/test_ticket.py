@@ -1,27 +1,31 @@
+import pytest
+from tests.unit.base_interface_test import BaseInterfaceTest
 from models.tickets import TicketModel
-from models.notes import NotesModel
+from schemas.tickets import TicketSchema
 
-def test_ticket():
-    """The properties must match the ticket model's inputs."""
-    testIssue = 'Property Damage'
-    testSender = 'user1 tester'
-    testTenant = 'Renty McRenter'
-    testStatus = 'new'
-    testUrgency = 'low'
-    testAssignedUser = 4
+lass TestBaseTicketModel(BaseInterfaceTest):
+    def setup(self):
+        self.object = TicketModel()
+        self.custom_404_msg = 'Ticket not found'
 
-    test_ticket = TicketModel(
-        issue=testIssue,
-        sender=testSender,
-        tenant=testTenant,
-        status=testStatus,
-        urgency=testUrgency,
-        assignedUser=testAssignedUser,
-    )
+        # TODO: Looks like we also don't have a schema - we need to add one
+        self.schema = TicketSchema
 
-    assert test_ticket.issue == testIssue
-    assert test_ticket.sender == testSender
-    assert test_ticket.tenant == testTenant
-    assert test_ticket.status == testStatus
-    assert test_ticket.urgency == testUrgency
-    assert test_ticket.assignedUser == testAssignedUser
+@pytest.mark.usefixtures('empty_test_db')
+class TestTicketModel():
+    def test_json(self, create_ticket):
+        ticket = create_ticket()
+        
+        # TODO: Set up necessary relationships - look at tickets.py
+        # Set up the tenant,assignedUser, and sender fields which map to the tenant and users models
+        # Also look at the notes relationship
+
+        # assert ticket.json() == {
+        #         'id': ticket.id,
+        #         'issue': ticket.issue,
+        #         'sender': ticket.sender,
+        #         'tenant': ticket.tenant,
+        #         'status': ticket.status,
+        #         'urgency': ticket.urgency,
+        #         'assignedUser': ticket.assignedUser,
+        #     }
