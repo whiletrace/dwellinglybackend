@@ -1,3 +1,4 @@
+import pytest
 from models.user import UserModel, RoleEnum
 from unittest.mock import patch
 import jwt
@@ -29,3 +30,9 @@ def test_reset_password_token(stubbed_encode, app, test_database):
 def test_full_name():
     admin_user = UserModel(email=adminUserEmail, password="1234", firstName="first", lastName="last", phone=phone, role=adminRole, archived=0)
     assert admin_user.full_name() == 'first last'
+
+
+@pytest.mark.usefixtures("empty_test_db")
+class TestFixtures:
+    def test_create_join_staff(self, create_join_staff):
+        assert create_join_staff()

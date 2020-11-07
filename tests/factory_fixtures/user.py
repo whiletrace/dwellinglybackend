@@ -16,3 +16,19 @@ def create_property_manager():
         pm.save_to_db()
         return pm
     yield _create_property_manager
+
+@pytest.fixture
+def create_join_staff():
+    def _create_join_staff():
+        staff = UserModel(
+                email="staffer@example.com",
+                password=b'asdf',
+                firstName="File",
+                lastName="Last",
+                phone="503-555-hello",
+                role=RoleEnum.STAFF,
+                archived=False
+            )
+        staff.save_to_db()
+        return staff
+    yield _create_join_staff
